@@ -12,6 +12,7 @@ function getGenAI() {
 }
 
 const isRateLimited = createRateLimiter(20, 60_000);
+const SERVICE_ERROR = "Our chat service is temporarily unavailable. Please try again shortly or contact hello@bizzzup.com.";
 
 export async function POST(req: Request) {
   /* ─── rate limit ─── */
@@ -40,9 +41,14 @@ export async function POST(req: Request) {
   }
 
   /* ─── stream from Gemini ─── */
+  if (!process.env.GOOGLE_API_KEY) {
+    console.error("GOOGLE_API_KEY is not set.");
+    return Response.json({ error: SERVICE_ERROR }, { status: 503 });
+  }
+
   try {
     const model = getGenAI().getGenerativeModel({
-      model: "gemini-2.0-flash",
+      model: process.env.GEMINI_MODEL?.trim() || "gemini-3.8-flash",
       systemInstruction: SYSTEM_PROMPT,
     });
 
@@ -74,9 +80,10 @@ export async function POST(req: Request) {
           controller.enqueue(encoder.encode("data: [DONE]\n\n"));
           controller.close();
         } catch (err) {
+          console.error("Gemini stream error:", err);
           controller.enqueue(
             encoder.encode(
-              `data: ${JSON.stringify({ error: err instanceof Error ? err.message : "Stream interrupted" })}\n\n`,
+              `data: ${JSON.stringify({ error: SERVICE_ERROR })}\n\n`,
             ),
           );
           controller.close();
@@ -94,13 +101,8 @@ export async function POST(req: Request) {
   } catch (err) {
     console.error("Gemini API error:", err);
     return Response.json(
-      {
-        error:
-          err instanceof Error
-            ? err.message
-            : "Failed to connect to AI service",
-      },
-      { status: 500 },
+      { error: SERVICE_ERROR },
+      { status: 502 },
     );
   }
 }

@@ -425,8 +425,9 @@ export default function ChatBot() {
                   ),
                 );
               }
-            } catch {
-              /* skip malformed chunks */
+            } catch (err) {
+              // Skip malformed JSON, but surface service errors to the user.
+              if (!(err instanceof SyntaxError)) throw err;
             }
           }
         }

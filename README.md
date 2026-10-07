@@ -35,6 +35,7 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 2. Use the **Next.js** framework preset. `vercel.json` configures `npm ci` for installation and `npm run build` for the build. Leave the Output Directory at the framework default.
 3. Add these server-side environment variables in the Vercel project settings for Production and, if needed, Preview:
    - `GOOGLE_API_KEY`: enables the Gemini chat endpoint (`/api/chat`).
+   - `GEMINI_MODEL` (optional): overrides the chat model, which defaults to `gemini-3.8-flash`. Use a model available to your Google API project.
    - `RESEND_API_KEY`: enables the contact email endpoint (`/api/contact`). Configure Resend to send from `contact@bizzzup.com`; messages go to `hello@bizzzup.com`.
 4. Deploy. After changing environment variables, redeploy to apply them.
 
