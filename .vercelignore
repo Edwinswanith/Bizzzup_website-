@@ -1,0 +1,14 @@
+# Local credentials and generated files
+.env*
+node_modules/
+.next/
+out/
+coverage/
+*.tsbuildinfo
+*.log
+
+# Local browser artifacts and container deployment files
+.playwright-mcp/
+Dockerfile
+.dockerignore
+cloud_run.bat

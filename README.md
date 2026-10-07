@@ -31,7 +31,17 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 
 ## Deploy on Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. Import this repository into [Vercel](https://vercel.com/new) and use the repository root as the Root Directory.
+2. Use the **Next.js** framework preset. `vercel.json` configures `npm ci` for installation and `npm run build` for the build. Leave the Output Directory at the framework default.
+3. Add these server-side environment variables in the Vercel project settings for Production and, if needed, Preview:
+   - `GOOGLE_API_KEY`: enables the Gemini chat endpoint (`/api/chat`).
+   - `RESEND_API_KEY`: enables the contact email endpoint (`/api/contact`). Configure Resend to send from `contact@bizzzup.com`; messages go to `hello@bizzzup.com`.
+4. Deploy. After changing environment variables, redeploy to apply them.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-"# Bizzzup_website-" 
+For local development, copy `.env.example` to `.env.local` and fill in the values. The site can build without these keys, but the corresponding API integrations require them at runtime.
+
+To deploy from the command line, run `npx vercel` for a preview or `npx vercel --prod` for production from the repository root. `.vercelignore` excludes local environment files, build output, and browser artifacts from CLI uploads. Project linking data in `.vercel/` is already ignored by Git.
+
+The existing standalone Next.js output supports the Docker deployment; Vercel builds the application through its Next.js integration.
+
+Configuration reference: [Vercel project configuration](https://vercel.com/docs/project-configuration/vercel-json).
